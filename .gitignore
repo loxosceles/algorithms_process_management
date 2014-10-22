@@ -13,8 +13,8 @@ local.properties
 .settings/
 .loadpath
 /src/main/resources/rebel.xml
-build/*
-nbproject/*
+build/
+nbproject/
 manifest.mf
 build.xml
 # External tool builders
