@@ -32,6 +32,9 @@ def print_table(process_list):
         print(p.name, '\t\t  ', p.time_of_arrival, '\t\t     ', p.execution_time)
 
 def first_comes_first_served(process_list):
+    '''
+    Algoritmo First-Comes-First-Served
+    '''
     global wait_time_all
     process_list_copy = process_list[:]
 
@@ -51,9 +54,15 @@ def first_comes_first_served(process_list):
         current_process.t_resp_wait = (current_process.tot_time / current_process.execution_time) 
 
 def round_robin():
+    '''
+    TODO: Algortimos Round Robin
+    '''
     pass
 
 def shortest_next():
+    '''
+    TODO: Algoritmo Shortest Process Next
+    '''
     pass
 
 def statistics(message):
