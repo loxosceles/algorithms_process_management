@@ -163,9 +163,7 @@ def first_comes_first_served(process_list):
     '''
     Algoritmo First-Comes-First-Served
     '''
-    #global wait_time_all
     wait_time_all = 0
-    back_shift = 0
 
     process_list_copy = process_list[:]
 
@@ -178,7 +176,6 @@ def first_comes_first_served(process_list):
         if current_process.wait_time < 0:
             current_process.wait_time = 0
         wait_time_all = wait_time_all + current_process.execution_time
-        back_shift = 0
 
         current_process.tot_time = current_process.wait_time + current_process.execution_time 
         current_process.t_resp_wait = (current_process.tot_time / current_process.execution_time) 
@@ -188,8 +185,6 @@ def round_robin(process_list):
     '''
     Algortimo Round Robin
     '''
-    #print('Round Robin ---------------- 1 ')
-    #print(process_listA[0].name, process_listA[0].time_of_arrival, process_listA[0].execution_time)
 
     # variable que guarda el tiempo de ejecución y idle time
     # de todos los procesos anteriores, es efectivamente el 
@@ -200,39 +195,26 @@ def round_robin(process_list):
     
     while process_list_copy:
         current_process = process_list_copy.pop(0)
-        #print('Round Robin ---------------- 2 ')
-        print('Process: ', current_process.name, ' comes in')
-        print('with toa: ', current_process.time_of_arrival, 'and ecd: ',  current_process.execution_countdown, '\n')
-
-    
-        # 
+        
+        if wait_time_all < current_process.time_of_arrival:
+            current_process.time_of_arrival = current_process.time_of_arrival - \
+                (current_process.time_of_arrival - wait_time_all)
+         
         if current_process.execution_countdown > 4:
-            print('IF: Name: ', current_process.name)
             current_process.execution_countdown = current_process.execution_countdown - 4
-            print('current_process.execution_countdown', current_process.execution_countdown)
             process_list_copy.append(current_process)
             wait_time_all = wait_time_all + 4
-            print('wait_time_all: ', wait_time_all)
-            print('------')
             
 
         elif current_process.execution_countdown < 4:
-            print('ELIF1: Name: ', current_process.name)
             current_process.execution_countdown = current_process.execution_countdown - 4
-            print('current_process.execution_countdown', current_process.execution_countdown)
             wait_time_all = wait_time_all + (4 - abs(current_process.execution_countdown))
-            print('wait_time_all: ', wait_time_all)
-            print('------')
             current_process.execution_countdown = 0
 
         elif current_process.execution_countdown == 4:
-            print('ELIF2: Name: ', current_process.name)
-            print('current_process.execution_countdown', current_process.execution_countdown)
             wait_time_all = wait_time_all + 4
-            print('wait_time_all: ', wait_time_all)
             current_process.execution_countdown = 0
 
-        print('time of arrival for: ', current_process.name, ', ', current_process.time_of_arrival)
         current_process.tot_time = wait_time_all - current_process.time_of_arrival
         current_process.wait_time = current_process.tot_time - current_process.execution_time
         current_process.t_resp_wait = current_process.tot_time / current_process.execution_time
@@ -261,17 +243,15 @@ def statistics(process_list, message):
 '''
 Main
 '''
-#ook_in = 0
-process_list = []
 
-#process_list = create_virtual_processes()
-#caller()
+process_list = create_virtual_processes()
+caller()
 
 #process_listB = testdummy1()
 #first_comes_first_served(process_listB)
 #statistics(process_listB, 'tst')
 
-process_listA = testdummy2()
-round_robin(process_listA)
+#process_listA = testdummy2()
+#round_robin(process_listA)
 
-statistics(process_listA, 'test')
+#statistics(process_listA, 'test')
