@@ -232,12 +232,21 @@ def statistics(process_list, message):
     procesos. Un proceso en este momento de la impresión tiene valores actualizados de un algoritmo
     que se ejecutó justo antes.
      '''
-    print(message)
-    print()
-    print('Virtual    Time of    Execution    T     E       P\nProcess    Arrival    Time')
-    print("_" * 56)
+    t_average = 0.0
+    e_average = 0.0
+    p_average = 0.0
+
+    print(message,'\n')
+    print('Virtual    Time of    Execution    T         E            P\nProcess    Arrival    Time')
+    print("_" * 65)
     for p in process_list:
-        print(p.name, '\t  ', p.time_of_arrival, '\t     ', p.execution_time, '\t  ', p.tot_time, '\t', p.wait_time, '\t', '%.4f'%(p.t_resp_wait))
+        print(p.name, '\t  ', p.time_of_arrival, '\t     ', p.execution_time, '\t ', p.tot_time, '\t    ', p.wait_time, ' \t', '%.4f'%(p.t_resp_wait))
+        t_average = t_average + float(p.tot_time)
+        e_average = e_average + float(p.wait_time)
+        p_average = p_average + float(p.t_resp_wait)
+
+    print('_' * 65)
+    print('Promedio: \t\t\t   ',  '%.2f'%(t_average / 5), '  ', '%.2f'%(e_average / 5), '\t', '%.2f'%(p_average / 5))
 
 
 '''
