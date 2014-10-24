@@ -151,6 +151,8 @@ def caller():
     '''
     global process_list
     
+    print('=' * 65)
+    
     for iter in range(3):
         process_list = create_virtual_processes()
         first_comes_first_served(process_list)
@@ -158,6 +160,9 @@ def caller():
 
         round_robin(process_list)
         statistics(process_list, "\nRound Robin")
+        print()
+        print('=' * 65)
+        
 
 def first_comes_first_served(process_list):
     '''
@@ -232,9 +237,9 @@ def statistics(process_list, message):
     procesos. Un proceso en este momento de la impresión tiene valores actualizados de un algoritmo
     que se ejecutó justo antes.
      '''
-    t_average = 0.0
-    e_average = 0.0
-    p_average = 0.0
+    t_average = 0
+    e_average = 0
+    p_average = 0
 
     print(message,'\n')
     print('Virtual    Time of    Execution    T         E            P\nProcess    Arrival    Time')
@@ -246,7 +251,7 @@ def statistics(process_list, message):
         p_average = p_average + float(p.t_resp_wait)
 
     print('_' * 65)
-    print('Promedio: \t\t\t   ',  '%.2f'%(t_average / 5), '  ', '%.2f'%(e_average / 5), '\t', '%.2f'%(p_average / 5))
+    print('Promedio: \t\t\t ',  '%.2f'%(t_average / 5), '    ', '%.2f'%(e_average / 5), '\t', '%.2f'%(p_average / 5))
 
 
 '''
