@@ -45,31 +45,56 @@ def testdummy():
     p_list.append(E)
     
     return p_list
-'''
+
 def testdummy1():
     p_list = []
     A = VirtualProcess(0, 3)
     A.name = 'A'
     p_list.append(A)
 
-    B = VirtualProcess(3, 7)
+    B = VirtualProcess(6, 15)
     B.name = 'B'
     p_list.append(B)
 
-    C = VirtualProcess(7, 2)
+    C = VirtualProcess(11, 14)
     C.name = 'C'
     p_list.append(C)
 
-    D = VirtualProcess(10, 9)
+    D = VirtualProcess(13, 3)
     D.name = 'D'
     p_list.append(D)
 
-    E = VirtualProcess(14, 6)
+    E = VirtualProcess(15, 14)
     E.name = 'E'
     p_list.append(E)
     
     return p_list
-'''
+
+def testdummy2():
+    p_list = []
+    A = VirtualProcess(0, 3)
+    A.name = 'A'
+    p_list.append(A)
+
+    B = VirtualProcess(7, 11)
+    B.name = 'B'
+    p_list.append(B)
+
+    C = VirtualProcess(10, 3)
+    C.name = 'C'
+    p_list.append(C)
+
+    D = VirtualProcess(17, 13)
+    D.name = 'D'
+    p_list.append(D)
+
+    E = VirtualProcess(21, 6)
+    E.name = 'E'
+    p_list.append(E)
+    
+    return p_list
+
+
 class VirtualProcess():
     '''
     La clase VirtualProcess sirve solamente para guardar los valores de cada proceso virtual. Se
@@ -140,21 +165,22 @@ def first_comes_first_served(process_list):
     '''
     #global wait_time_all
     wait_time_all = 0
+    back_shift = 0
+
     process_list_copy = process_list[:]
 
     while process_list_copy:
         current_process = process_list_copy.pop(0)
+
+        # calcula el tiempo que haya tenido que esperar un proceso hasta que sea atendido
         current_process.wait_time = wait_time_all - current_process.time_of_arrival
 
         if current_process.wait_time < 0:
             current_process.wait_time = 0
-        
-        if current_process.time_of_arrival <= current_process.execution_time:
-            wait_time_all = wait_time_all + current_process.execution_time
-        else:
-            wait_time_all = wait_time_all + current_process.time_of_arrival
+        wait_time_all = wait_time_all + current_process.execution_time
+        back_shift = 0
 
-        current_process.tot_time = wait_time_all
+        current_process.tot_time = current_process.wait_time + current_process.execution_time 
         current_process.t_resp_wait = (current_process.tot_time / current_process.execution_time) 
 
 
@@ -175,24 +201,38 @@ def round_robin(process_list):
     while process_list_copy:
         current_process = process_list_copy.pop(0)
         #print('Round Robin ---------------- 2 ')
-        #print(current_process.name, current_process.time_of_arrival, current_process.execution_countdown)
+        print('Process: ', current_process.name, ' comes in')
+        print('with toa: ', current_process.time_of_arrival, 'and ecd: ',  current_process.execution_countdown, '\n')
+
     
         # 
         if current_process.execution_countdown > 4:
+            print('IF: Name: ', current_process.name)
             current_process.execution_countdown = current_process.execution_countdown - 4
+            print('current_process.execution_countdown', current_process.execution_countdown)
             process_list_copy.append(current_process)
             wait_time_all = wait_time_all + 4
+            print('wait_time_all: ', wait_time_all)
+            print('------')
             
 
         elif current_process.execution_countdown < 4:
+            print('ELIF1: Name: ', current_process.name)
             current_process.execution_countdown = current_process.execution_countdown - 4
+            print('current_process.execution_countdown', current_process.execution_countdown)
             wait_time_all = wait_time_all + (4 - abs(current_process.execution_countdown))
+            print('wait_time_all: ', wait_time_all)
+            print('------')
             current_process.execution_countdown = 0
 
         elif current_process.execution_countdown == 4:
+            print('ELIF2: Name: ', current_process.name)
+            print('current_process.execution_countdown', current_process.execution_countdown)
             wait_time_all = wait_time_all + 4
+            print('wait_time_all: ', wait_time_all)
             current_process.execution_countdown = 0
 
+        print('time of arrival for: ', current_process.name, ', ', current_process.time_of_arrival)
         current_process.tot_time = wait_time_all - current_process.time_of_arrival
         current_process.wait_time = current_process.tot_time - current_process.execution_time
         current_process.t_resp_wait = current_process.tot_time / current_process.execution_time
@@ -225,13 +265,13 @@ Main
 process_list = []
 
 #process_list = create_virtual_processes()
-#caller(process_list)
+#caller()
 
-process_listA = testdummy()
-#rint(process_listA[0].name, process_listA[0].time_of_arrival, process_listA[0].execution_time)
-#print(process_listA[1].name, process_listA[1].time_of_arrival, process_listA[1].execution_time)
-#print(process_listA[2].name, process_listA[2].time_of_arrival, process_listA[2].execution_time)
-#print(process_listA[3].name, process_listA[3].time_of_arrival, process_listA[3].execution_time)
-#print(process_listA[4].name, process_listA[4].time_of_arrival, process_listA[4].execution_time)
+#process_listB = testdummy1()
+#first_comes_first_served(process_listB)
+#statistics(process_listB, 'tst')
+
+process_listA = testdummy2()
 round_robin(process_listA)
+
 statistics(process_listA, 'test')
