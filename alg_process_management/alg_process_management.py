@@ -151,8 +151,6 @@ def caller():
     '''
     global process_list
     
-    print('=' * 65)
-    
     for iter in range(3):
         process_list = create_virtual_processes()
         first_comes_first_served(process_list)
@@ -160,9 +158,9 @@ def caller():
 
         round_robin(process_list)
         statistics(process_list, "\nRound Robin")
-        print()
-        print('=' * 65)
-        
+
+        shortest_next(process_list)
+        statistics(process_list, "\nShortest Process Next")
 
 def first_comes_first_served(process_list):
     '''
@@ -225,11 +223,28 @@ def round_robin(process_list):
         current_process.t_resp_wait = current_process.tot_time / current_process.execution_time
     
 
-def shortest_next():
+def shortest_next(process_list):
     '''
-    TODO: Algoritmo Shortest Process Next
+    Algoritmo Shortest Process Next
     '''
-    pass
+    
+    wait_time_all = 0
+    first_proces=process_list[:1]
+    process_list_copy = process_list[1:]
+    process_list_copy.sort(key=lambda x: x.execution_time)
+    
+    while process_list_copy:
+        current_process = process_list_copy.pop(0)
+
+        current_process.wait_time = wait_time_all - current_process.time_of_arrival
+
+        if current_process.wait_time < 0:
+            current_process.wait_time = 0
+        wait_time_all = wait_time_all + current_process.execution_time
+
+        current_process.tot_time = current_process.wait_time + current_process.execution_time 
+        current_process.t_resp_wait = (current_process.tot_time / current_process.execution_time)
+        
 
 def statistics(process_list, message):
     '''
@@ -237,21 +252,12 @@ def statistics(process_list, message):
     procesos. Un proceso en este momento de la impresión tiene valores actualizados de un algoritmo
     que se ejecutó justo antes.
      '''
-    t_average = 0
-    e_average = 0
-    p_average = 0
-
-    print(message,'\n')
-    print('Virtual    Time of    Execution    T         E            P\nProcess    Arrival    Time')
-    print("_" * 65)
+    print(message)
+    print()
+    print('Virtual    Time of    Execution    T     E       P\nProcess    Arrival    Time')
+    print("_" * 56)
     for p in process_list:
-        print(p.name, '\t  ', p.time_of_arrival, '\t     ', p.execution_time, '\t ', p.tot_time, '\t    ', p.wait_time, ' \t', '%.4f'%(p.t_resp_wait))
-        t_average = t_average + float(p.tot_time)
-        e_average = e_average + float(p.wait_time)
-        p_average = p_average + float(p.t_resp_wait)
-
-    print('_' * 65)
-    print('Promedio: \t\t\t ',  '%.2f'%(t_average / 5), '    ', '%.2f'%(e_average / 5), '\t', '%.2f'%(p_average / 5))
+        print(p.name, '\t  ', p.time_of_arrival, '\t     ', p.execution_time, '\t  ', p.tot_time, '\t', p.wait_time, '\t', '%.4f'%(p.t_resp_wait))
 
 
 '''
