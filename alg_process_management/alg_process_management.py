@@ -14,6 +14,7 @@ Created on Oct 20, 2014
 '''
 
 from random import randrange
+import concurrent
 
 '''
 def print_table(process_list):
@@ -72,15 +73,15 @@ def testdummy1():
 
 def testdummy2():
     p_list = []
-    A = VirtualProcess(0, 3)
+    A = VirtualProcess(0, 11)
     A.name = 'A'
     p_list.append(A)
 
-    B = VirtualProcess(7, 11)
+    B = VirtualProcess(10, 11)
     B.name = 'B'
     p_list.append(B)
 
-    C = VirtualProcess(10, 3)
+    C = VirtualProcess(7, 3)
     C.name = 'C'
     p_list.append(C)
 
@@ -225,11 +226,60 @@ def round_robin(process_list):
         current_process.t_resp_wait = current_process.tot_time / current_process.execution_time
     
 
-def shortest_next():
+def shortest_next(process_list):
     '''
     TODO: Algoritmo Shortest Process Next
     '''
-    pass
+    '''
+    wait_time_all = 0
+    concurrent_processes = []
+    process_list_copy = process_list[:]
+    
+    current_process = process_list_copy.pop(0)
+    wait_time_all = wait_time_all + current_process.execution_time
+    print('wait_time_all', wait_time_all)
+
+    for item in process_list_copy:
+        print('time_of_arrival', item.time_of_arrival)
+        if item.time_of_arrival < wait_time_all:
+            print(item.name, " is a concurrent process")
+            concurrent_processes.append(item)
+        
+        #concurrent_processes.sort(key = lambda x: x.time_of_arrival)
+        for item in concurrent_processes:
+            wait_time_all = wait_time_all + item.time_of_arrival
+
+        concurrent_processes = []
+
+    print('wait_time_all', wait_time_all)
+
+
+    current_process.tot_time = wait_time_all - current_process.time_of_arrival
+    current_process.wait_time = current_process.tot_time - current_process.execution_time
+    current_process.t_resp_wait = current_process.tot_time / current_process.execution_time
+    '''
+    wait_time_all = 0
+
+    first_process = process_list[:1]
+
+    process_list_copy = process_list[1:]
+    process_list_copy.sort(key=lambda x: x.execution_time)
+
+    while process_list_copy:
+
+        current_process = process_list_copy.pop(0)
+
+        current_process.wait_time = wait_time_all - current_process.time_of_arrival
+
+        if current_process.wait_time < 0:
+
+            current_process.wait_time = 0
+
+        wait_time_all = wait_time_all + current_process.execution_time
+
+        current_process.tot_time = current_process.wait_time + current_process.execution_time 
+        current_process.t_resp_wait = (current_process.tot_time / current_process.execution_time)
+
 
 def statistics(process_list, message):
     '''
@@ -258,14 +308,16 @@ def statistics(process_list, message):
 Main
 '''
 
-process_list = create_virtual_processes()
-caller()
+#process_list = create_virtual_processes()
+#caller()
 
 #process_listB = testdummy1()
 #first_comes_first_served(process_listB)
 #statistics(process_listB, 'tst')
 
-#process_listA = testdummy2()
+process_listA = testdummy2()
 #round_robin(process_listA)
+shortest_next(process_listA)
+statistics(process_listA, 'test')
 
 #statistics(process_listA, 'test')
