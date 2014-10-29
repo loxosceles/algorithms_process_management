@@ -14,7 +14,7 @@ Created on Oct 20, 2014
 '''
 
 from random import randrange
-import concurrent
+from time import sleep
 
 '''
 def print_table(process_list):
@@ -77,11 +77,11 @@ def testdummy2():
     A.name = 'A'
     p_list.append(A)
 
-    B = VirtualProcess(10, 11)
+    B = VirtualProcess(7, 11)
     B.name = 'B'
     p_list.append(B)
 
-    C = VirtualProcess(7, 3)
+    C = VirtualProcess(10, 3)
     C.name = 'C'
     p_list.append(C)
 
@@ -156,11 +156,16 @@ def caller():
     
     for iter in range(3):
         process_list = create_virtual_processes()
+
         first_comes_first_served(process_list)
         statistics(process_list, "\nFirst Comes First Served")
 
         round_robin(process_list)
         statistics(process_list, "\nRound Robin")
+        
+        shortest_next(process_list)
+        statistics(process_list, "\nShortest Process Next")
+        
         print()
         print('=' * 65)
         
@@ -224,62 +229,59 @@ def round_robin(process_list):
         current_process.tot_time = wait_time_all - current_process.time_of_arrival
         current_process.wait_time = current_process.tot_time - current_process.execution_time
         current_process.t_resp_wait = current_process.tot_time / current_process.execution_time
-    
+
+def print_plist(plist, message): 
+    print(message)
+    for item in plist:
+        print("Name: ", item.name, "Arr.Time", item.time_of_arrival, "Exec.Time", item.execution_time)
 
 def shortest_next(process_list):
     '''
-    TODO: Algoritmo Shortest Process Next
+    Algoritmo Shortest Next
     '''
-    '''
+    
     wait_time_all = 0
-    concurrent_processes = []
     process_list_copy = process_list[:]
     
-    current_process = process_list_copy.pop(0)
-    wait_time_all = wait_time_all + current_process.execution_time
-    print('wait_time_all', wait_time_all)
-
-    for item in process_list_copy:
-        print('time_of_arrival', item.time_of_arrival)
-        if item.time_of_arrival < wait_time_all:
-            print(item.name, " is a concurrent process")
-            concurrent_processes.append(item)
-        
-        #concurrent_processes.sort(key = lambda x: x.time_of_arrival)
-        for item in concurrent_processes:
-            wait_time_all = wait_time_all + item.time_of_arrival
-
-        concurrent_processes = []
-
-    print('wait_time_all', wait_time_all)
-
-
-    current_process.tot_time = wait_time_all - current_process.time_of_arrival
-    current_process.wait_time = current_process.tot_time - current_process.execution_time
-    current_process.t_resp_wait = current_process.tot_time / current_process.execution_time
-    '''
-    wait_time_all = 0
-
-    first_process = process_list[:1]
-
-    process_list_copy = process_list[1:]
-    process_list_copy.sort(key=lambda x: x.execution_time)
+    #print_plist(process_list_copy, "\nAfter processs_list_copy assignment")
 
     while process_list_copy:
-
+        concurrent_processes = []
         current_process = process_list_copy.pop(0)
+        #print("-------")
+        #print("\nCurrent before check: ", current_process.name)
+        #print("-------")
+        other_processes = process_list_copy[:]
+        #print_plist(other_processes, "Others unsorted: ")
 
         current_process.wait_time = wait_time_all - current_process.time_of_arrival
-
+        
         if current_process.wait_time < 0:
-
             current_process.wait_time = 0
-
+            
+        current_process.tot_time = current_process.execution_time + current_process.wait_time
+        current_process.t_resp_wait = current_process.tot_time / current_process.execution_time
+        
         wait_time_all = wait_time_all + current_process.execution_time
+        #print('\nInside while after wait_time_all set: ', wait_time_all)
 
-        current_process.tot_time = current_process.wait_time + current_process.execution_time 
-        current_process.t_resp_wait = (current_process.tot_time / current_process.execution_time)
+        for item in other_processes: 
+            #print("Inside for, Item name: ", item.name)
+            #if item.time_of_arrival < wait_time_all and item.time_of_arrival > wait_time_all_before_current:
+            if item.time_of_arrival < wait_time_all:
+                concurrent_processes.append(item)
+        #        print(item.name, " appended")
 
+        concurrent_processes.sort(key = lambda x: x.execution_time)
+        #print("\nconcurrent processes of process: ", current_process.name)
+        
+        #print_plist(concurrent_processes, "Concurrent processes: ")
+
+        if concurrent_processes:
+            dispatched_process = concurrent_processes.pop(0)
+            process_list_copy.remove(dispatched_process)
+            process_list_copy.insert(0, dispatched_process) 
+        #print_plist(process_list_copy, "New process_list_copy")
 
 def statistics(process_list, message):
     '''
@@ -308,16 +310,16 @@ def statistics(process_list, message):
 Main
 '''
 
-#process_list = create_virtual_processes()
-#caller()
+process_list = create_virtual_processes()
+caller()
 
 #process_listB = testdummy1()
 #first_comes_first_served(process_listB)
 #statistics(process_listB, 'tst')
 
-process_listA = testdummy2()
+#process_listA = testdummy2()
 #round_robin(process_listA)
-shortest_next(process_listA)
-statistics(process_listA, 'test')
+#shortest_next(process_listA)
+#statistics(process_listA, 'test')
 
 #statistics(process_listA, 'test')
