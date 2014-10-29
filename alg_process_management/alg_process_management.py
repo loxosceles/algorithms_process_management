@@ -237,7 +237,7 @@ def print_plist(plist, message):
 
 def shortest_next(process_list):
     '''
-    Algoritmo Shortest Next
+    TODO: Algoritmo Shortest Process Next
     '''
     
     wait_time_all = 0
