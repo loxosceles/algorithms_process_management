@@ -28,7 +28,7 @@ def testdummy(inp_list):
     Recibe una lista con valres de los que se conozca el resultado y con esto se compruebe el correcto
     funcionamiento del programa.
     '''
-    # comantar esta lista para pasar una lista propia
+    # comentar esta lista para pasar una lista propia
     inp_list = [(0, 6), (1, 10), (4, 4), (9, 9), (12, 8)]
 
     p_list = []
